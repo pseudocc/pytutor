@@ -21,10 +21,7 @@ def read_op(raw):
     return read_op.supported[raw]
 
 read_op.supported = {
-    "add": add,
-    "sub": sub,
-    "mul": mul,
-    "div": div,
+    fn.__name__: fn for fn in [add, sub, mul, div]
 }
 
 read_op.help = f"Enter an operator {list(read_op.supported.keys())}"
