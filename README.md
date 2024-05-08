@@ -55,3 +55,49 @@ index 0000000..2ef9a48
 
 The elegance of TDA is that your code is always end-to-end runnable, you don't
 need to write unit test for the function at the beginning to prove it works.
+
+```diff
+Subject: [PATCH 02/10] calc: create an `add` fn
+
+Since we just got started, refactoring won't tak too much efforts.
+---
+ calc.py | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/calc.py b/calc.py
+index 2ef9a48..dc3e29f 100644
+--- a/calc.py
++++ b/calc.py
+@@ -1,18 +1,22 @@
++def add(x, y):
++    return x + y
++add.symbol = "+"
++
+ def calc_args():
+     return {
+         "left": 1,
+         "right": 2,
+-        "operator": ("+", lambda x, y: x + y)
++        "operator": add,
+     }
+ 
+ def calc():
+     args = calc_args()
+     left = args["left"]
+     right = args["right"]
+-    op_name, op_fn = args["operator"]
++    op_fn = args["operator"]
+ 
+     result = op_fn(left, right)
+-    print(f"{left} {op_name} {right} = {result}")
++    print(f"{left} {op_fn.symbol} {right} = {result}")
+ 
+ if __name__ == "__main__":
+     calc()
+-- 
+```
+
+We defined an `add` function, and assigned `"+"` to its `symbol` field, so we
+can use the `add` directly instead of a `tuple`, to me it is better than the
+original one since we won't have cases that share the same `fn` but require
+different `symbol`.
