@@ -358,3 +358,38 @@ index 85c17bc..92771ca 100644
 
 Add the rest of our operators, since we proved the whole flow is steady in the
 last commit, it's a no-brainer here.
+
+```diff
+Subject: [PATCH 09/10] calc: refactor, simplify our code
+
+---
+ calc.py | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/calc.py b/calc.py
+index 92771ca..0558722 100644
+--- a/calc.py
++++ b/calc.py
+@@ -21,10 +21,7 @@ def read_op(raw):
+     return read_op.supported[raw]
+ 
+ read_op.supported = {
+-    "add": add,
+-    "sub": sub,
+-    "mul": mul,
+-    "div": div,
++    fn.__name__: fn for fn in [add, sub, mul, div]
+ }
+ 
+ read_op.help = f"Enter an operator {list(read_op.supported.keys())}"
+-- 
+```
+
+> "premature optimization is the root of all evil."
+
+After `calc.py` meets all our requirements, it's about time to refactor the
+code to make our code better.
+
+Functions in Python have a builtin field `__name__` representing its name, so
+together with [dictionary comprehensions](https://peps.python.org/pep-0274/),
+we can make it one line.
