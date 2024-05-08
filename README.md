@@ -393,3 +393,91 @@ code to make our code better.
 Functions in Python have a builtin field `__name__` representing its name, so
 together with [dictionary comprehensions](https://peps.python.org/pep-0274/),
 we can make it one line.
+
+```diff
+Subject: [PATCH 10/10] calc: use decorator @op("+")
+
+---
+ calc.py | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/calc.py b/calc.py
+index 0558722..3075693 100644
+--- a/calc.py
++++ b/calc.py
+@@ -1,18 +1,27 @@
++ops = []
++
++def op(symbol):
++    def decorator(fn):
++        fn.symbol = symbol
++        ops.append(fn)
++        return fn
++    return decorator
++
++@op("+")
+ def add(x, y):
+     return x + y
+-add.symbol = "+"
+ 
++@op("-")
+ def sub(x, y):
+     return x - y
+-sub.symbol = "-"
+ 
++@op("*")
+ def mul(x, y):
+     return x * y
+-mul.symbol = "*"
+ 
++@op("/")
+ def div(x, y):
+     return x / y
+-div.symbol = "/"
+ 
+ def read_op(raw):
+     if raw not in read_op.supported:
+@@ -20,9 +29,7 @@ def read_op(raw):
+         return None
+     return read_op.supported[raw]
+ 
+-read_op.supported = {
+-    fn.__name__: fn for fn in [add, sub, mul, div]
+-}
++read_op.supported = { fn.__name__: fn for fn in ops }
+ 
+ read_op.help = f"Enter an operator {list(read_op.supported.keys())}"
+ 
+-- 
+```
+
+[Python decorators](https://peps.python.org/pep-0318/) could help us in two
+places:
+
+1. `op_fn.symbol`
+2. `read_op.supported`
+
+Say, one day we may want to extend `calc.py` by adding a `pow("**")` operator.
+We need to do something like (without the `@op` decorator):
+
+```diff
++def pow(x, y):
++    return x ** y
++pow.symbol = "**"
+
+ read_op.supported = {
+-    fn.__name__: fn for fn in [add, sub, mul, div]
++    fn.__name__: fn for fn in [add, sub, mul, div, pow]
+ }
+```
+
+If you missed either assigning `pow.symbol` or appending `[..., pow]` the
+program would crash!
+
+But with the `@op` decorator, it's a lot simpler.
+
+```diff
++@op("**")
++def pow(x, y):
++    return x ** y
+```
