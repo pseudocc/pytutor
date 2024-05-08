@@ -1,18 +1,27 @@
+ops = []
+
+def op(symbol):
+    def decorator(fn):
+        fn.symbol = symbol
+        ops.append(fn)
+        return fn
+    return decorator
+
+@op("+")
 def add(x, y):
     return x + y
-add.symbol = "+"
 
+@op("-")
 def sub(x, y):
     return x - y
-sub.symbol = "-"
 
+@op("*")
 def mul(x, y):
     return x * y
-mul.symbol = "*"
 
+@op("/")
 def div(x, y):
     return x / y
-div.symbol = "/"
 
 def read_op(raw):
     if raw not in read_op.supported:
@@ -20,9 +29,7 @@ def read_op(raw):
         return None
     return read_op.supported[raw]
 
-read_op.supported = {
-    fn.__name__: fn for fn in [add, sub, mul, div]
-}
+read_op.supported = { fn.__name__: fn for fn in ops }
 
 read_op.help = f"Enter an operator {list(read_op.supported.keys())}"
 
