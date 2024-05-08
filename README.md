@@ -101,3 +101,42 @@ We defined an `add` function, and assigned `"+"` to its `symbol` field, so we
 can use the `add` directly instead of a `tuple`, to me it is better than the
 original one since we won't have cases that share the same `fn` but require
 different `symbol`.
+
+```diff
+Subject: [PATCH 03/10] calc: read_int(left, right)
+
+Now we can read our input from stdin
+---
+ calc.py | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/calc.py b/calc.py
+index dc3e29f..cf16bc9 100644
+--- a/calc.py
++++ b/calc.py
+@@ -2,12 +2,17 @@ def add(x, y):
+     return x + y
+ add.symbol = "+"
+ 
++def read_int(raw):
++    return int(raw)
++
+ def calc_args():
+-    return {
+-        "left": 1,
+-        "right": 2,
++    payload = {
+         "operator": add,
+-    }
++    };
++    for side in ["left", "right"]:
++        raw = input(f"Enter {side} operand: ")
++        payload[side] = read_int(raw)
++    return payload
+ 
+ def calc():
+     args = calc_args()
+-- 
+```
+
+Let's read `left` and `right` from the stdin.
