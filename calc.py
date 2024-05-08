@@ -2,6 +2,18 @@ def add(x, y):
     return x + y
 add.symbol = "+"
 
+def sub(x, y):
+    return x - y
+sub.symbol = "-"
+
+def mul(x, y):
+    return x * y
+mul.symbol = "*"
+
+def div(x, y):
+    return x / y
+div.symbol = "/"
+
 def read_op(raw):
     if raw not in read_op.supported:
         print(f"Invalid operator: {raw}")
@@ -10,6 +22,9 @@ def read_op(raw):
 
 read_op.supported = {
     "add": add,
+    "sub": sub,
+    "mul": mul,
+    "div": div,
 }
 
 read_op.help = f"Enter an operator {list(read_op.supported.keys())}"
