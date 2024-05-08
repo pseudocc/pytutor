@@ -4,14 +4,16 @@ add.symbol = "+"
 
 def read_int(raw):
     return int(raw)
+read_int.help = "Enter an integer"
 
 def calc_args():
     payload = {
         "operator": add,
     };
     for side in ["left", "right"]:
-        raw = input(f"Enter {side} operand: ")
-        payload[side] = read_int(raw)
+        read_fn = read_int
+        raw = input(f"{read_fn.help} for {side}: ")
+        payload[side] = read_fn(raw)
     return payload
 
 def calc():
