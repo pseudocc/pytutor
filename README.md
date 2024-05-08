@@ -226,3 +226,51 @@ index 6ad3008..e475aa3 100644
 
 We defined a `required` field which contains the field name and its `read_fn`
 inside the `calc_args` function, now we can ask user to input them in a loop.
+
+```diff
+Subject: [PATCH 06/10] calc: error handling -> try again
+
+---
+ calc.py | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/calc.py b/calc.py
+index e475aa3..6cf104a 100644
+--- a/calc.py
++++ b/calc.py
+@@ -7,7 +7,13 @@ def read_op(raw):
+ read_op.help = "READ_OP_PLACEHOLDER"
+ 
+ def read_int(raw):
+-    return int(raw)
++    value = None
++    try:
++        value = int(raw)
++    except ValueError:
++        print(f"Invalid integer: {raw}")
++    return value
++
+ read_int.help = "Enter an integer"
+ 
+ def calc_args():
+@@ -19,7 +25,11 @@ def calc_args():
+     payload = {};
+     for field, read_fn in required:
+         raw = input(f"{read_fn.help} for {field}: ")
+-        payload[field] = read_fn(raw)
++        value = read_fn(raw)
++        while value is None:
++            raw = input("Try again: ")
++            value = read_fn(raw)
++        payload[field] = value
+     return payload
+ 
+ def calc():
+-- 
+```
+
+User may input invalid values that break the whole program, so we need to
+handle them by using the `try` `catch` block.
+
+Our `read_fn` is designed to `return None` when an error occurs, and `return` a
+valid value on success. Then we make a `while` loop to ask user to try again.
