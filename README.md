@@ -312,3 +312,49 @@ Let's make `read_op` to follow the `read_fn` interface (`return None` when an
 error occurs). To not repeat ourselves, we store the supported operations in
 `read_op.supported` so both `read_op.help` and `read_op` function block can
 access its value.
+
+```diff
+Subject: [PATCH 08/10] calc: add rest operators
+
+---
+ calc.py | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/calc.py b/calc.py
+index 85c17bc..92771ca 100644
+--- a/calc.py
++++ b/calc.py
+@@ -2,6 +2,18 @@ def add(x, y):
+     return x + y
+ add.symbol = "+"
+ 
++def sub(x, y):
++    return x - y
++sub.symbol = "-"
++
++def mul(x, y):
++    return x * y
++mul.symbol = "*"
++
++def div(x, y):
++    return x / y
++div.symbol = "/"
++
+ def read_op(raw):
+     if raw not in read_op.supported:
+         print(f"Invalid operator: {raw}")
+@@ -10,6 +22,9 @@ def read_op(raw):
+ 
+ read_op.supported = {
+     "add": add,
++    "sub": sub,
++    "mul": mul,
++    "div": div,
+ }
+ 
+ read_op.help = f"Enter an operator {list(read_op.supported.keys())}"
+-- 
+```
+
+Add the rest of our operators, since we proved the whole flow is steady in the
+last commit, it's a no-brainer here.
