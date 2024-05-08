@@ -274,3 +274,41 @@ handle them by using the `try` `catch` block.
 
 Our `read_fn` is designed to `return None` when an error occurs, and `return` a
 valid value on success. Then we make a `while` loop to ask user to try again.
+
+```diff
+Subject: [PATCH 07/10] calc: make read_op generic
+
+---
+ calc.py | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/calc.py b/calc.py
+index 6cf104a..85c17bc 100644
+--- a/calc.py
++++ b/calc.py
+@@ -3,8 +3,16 @@ def add(x, y):
+ add.symbol = "+"
+ 
+ def read_op(raw):
+-    return add
+-read_op.help = "READ_OP_PLACEHOLDER"
++    if raw not in read_op.supported:
++        print(f"Invalid operator: {raw}")
++        return None
++    return read_op.supported[raw]
++
++read_op.supported = {
++    "add": add,
++}
++
++read_op.help = f"Enter an operator {list(read_op.supported.keys())}"
+ 
+ def read_int(raw):
+     value = None
+-- 
+```
+
+Let's make `read_op` to follow the `read_fn` interface (`return None` when an
+error occurs). To not repeat ourselves, we store the supported operations in
+`read_op.supported` so both `read_op.help` and `read_op` function block can
+access its value.
