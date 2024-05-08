@@ -140,3 +140,40 @@ index dc3e29f..cf16bc9 100644
 ```
 
 Let's read `left` and `right` from the stdin.
+
+```diff
+Subject: [PATCH 04/10] calc: begin abstraction on read_fn
+
+---
+ calc.py | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/calc.py b/calc.py
+index cf16bc9..6ad3008 100644
+--- a/calc.py
++++ b/calc.py
+@@ -4,14 +4,16 @@ add.symbol = "+"
+ 
+ def read_int(raw):
+     return int(raw)
++read_int.help = "Enter an integer"
+ 
+ def calc_args():
+     payload = {
+         "operator": add,
+     };
+     for side in ["left", "right"]:
+-        raw = input(f"Enter {side} operand: ")
+-        payload[side] = read_int(raw)
++        read_fn = read_int
++        raw = input(f"{read_fn.help} for {side}: ")
++        payload[side] = read_fn(raw)
+     return payload
+ 
+ def calc():
+-- 
+```
+
+`read_fn.help` is introduced here to prompt different messages for each
+`read_fn` which we will implement for the `operator` later on. And `read_int`
+proves it works.
