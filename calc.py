@@ -7,7 +7,13 @@ def read_op(raw):
 read_op.help = "READ_OP_PLACEHOLDER"
 
 def read_int(raw):
-    return int(raw)
+    value = None
+    try:
+        value = int(raw)
+    except ValueError:
+        print(f"Invalid integer: {raw}")
+    return value
+
 read_int.help = "Enter an integer"
 
 def calc_args():
@@ -19,7 +25,11 @@ def calc_args():
     payload = {};
     for field, read_fn in required:
         raw = input(f"{read_fn.help} for {field}: ")
-        payload[field] = read_fn(raw)
+        value = read_fn(raw)
+        while value is None:
+            raw = input("Try again: ")
+            value = read_fn(raw)
+        payload[field] = value
     return payload
 
 def calc():
