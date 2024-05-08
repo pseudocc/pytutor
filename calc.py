@@ -2,18 +2,24 @@ def add(x, y):
     return x + y
 add.symbol = "+"
 
+def read_op(raw):
+    return add
+read_op.help = "READ_OP_PLACEHOLDER"
+
 def read_int(raw):
     return int(raw)
 read_int.help = "Enter an integer"
 
 def calc_args():
-    payload = {
-        "operator": add,
-    };
-    for side in ["left", "right"]:
-        read_fn = read_int
-        raw = input(f"{read_fn.help} for {side}: ")
-        payload[side] = read_fn(raw)
+    required = [
+        ("left", read_int),
+        ("right", read_int),
+        ("operator", read_op),
+    ]
+    payload = {};
+    for field, read_fn in required:
+        raw = input(f"{read_fn.help} for {field}: ")
+        payload[field] = read_fn(raw)
     return payload
 
 def calc():
