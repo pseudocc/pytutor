@@ -2,12 +2,17 @@ def add(x, y):
     return x + y
 add.symbol = "+"
 
+def read_int(raw):
+    return int(raw)
+
 def calc_args():
-    return {
-        "left": 1,
-        "right": 2,
+    payload = {
         "operator": add,
-    }
+    };
+    for side in ["left", "right"]:
+        raw = input(f"Enter {side} operand: ")
+        payload[side] = read_int(raw)
+    return payload
 
 def calc():
     args = calc_args()
