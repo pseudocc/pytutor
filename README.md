@@ -177,3 +177,52 @@ index cf16bc9..6ad3008 100644
 `read_fn.help` is introduced here to prompt different messages for each
 `read_fn` which we will implement for the `operator` later on. And `read_int`
 proves it works.
+
+```diff
+Subject: [PATCH 05/10] calc: also read the `operator` from stdin
+
+---
+ calc.py | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/calc.py b/calc.py
+index 6ad3008..e475aa3 100644
+--- a/calc.py
++++ b/calc.py
+@@ -2,18 +2,24 @@ def add(x, y):
+     return x + y
+ add.symbol = "+"
+ 
++def read_op(raw):
++    return add
++read_op.help = "READ_OP_PLACEHOLDER"
++
+ def read_int(raw):
+     return int(raw)
+ read_int.help = "Enter an integer"
+ 
+ def calc_args():
+-    payload = {
+-        "operator": add,
+-    };
+-    for side in ["left", "right"]:
+-        read_fn = read_int
+-        raw = input(f"{read_fn.help} for {side}: ")
+-        payload[side] = read_fn(raw)
++    required = [
++        ("left", read_int),
++        ("right", read_int),
++        ("operator", read_op),
++    ]
++    payload = {};
++    for field, read_fn in required:
++        raw = input(f"{read_fn.help} for {field}: ")
++        payload[field] = read_fn(raw)
+     return payload
+ 
+ def calc():
+-- 
+```
+
+We defined a `required` field which contains the field name and its `read_fn`
+inside the `calc_args` function, now we can ask user to input them in a loop.
