@@ -3,8 +3,16 @@ def add(x, y):
 add.symbol = "+"
 
 def read_op(raw):
-    return add
-read_op.help = "READ_OP_PLACEHOLDER"
+    if raw not in read_op.supported:
+        print(f"Invalid operator: {raw}")
+        return None
+    return read_op.supported[raw]
+
+read_op.supported = {
+    "add": add,
+}
+
+read_op.help = f"Enter an operator {list(read_op.supported.keys())}"
 
 def read_int(raw):
     value = None
